@@ -2,7 +2,9 @@ package tr.com.altindalorcun.carservice.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tr.com.altindalorcun.carservice.dto.CreateCarDto;
 
 import java.util.UUID;
 
@@ -10,6 +12,7 @@ import java.util.UUID;
 @Table(name = "car")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Car {
 
     @Id
@@ -19,6 +22,12 @@ public class Car {
     private String brand;
     @Column(name = "model", nullable = false)
     private String model;
-    @Column(name = "vrn", nullable = false, unique = true)
-    private String vrn;
+    @Column(name = "license_plate", nullable = false, unique = true)
+    private String licensePlate;
+
+    public Car(CreateCarDto dto) {
+        setBrand(dto.brand());
+        setModel(dto.model());
+        setLicensePlate(dto.licensePlate());
+    }
 }

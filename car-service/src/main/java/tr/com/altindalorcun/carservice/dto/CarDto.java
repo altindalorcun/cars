@@ -8,9 +8,9 @@ public record CarDto(
         UUID id,
         String brand,
         String model,
-        String vrn
+        String licensePlate
 ) {
     public CarDto(Car car) {
-        this(car.getId(), car.getBrand(), car.getModel(), car.getVrn());
+        this(car.getId(), car.getBrand(), car.getModel(), car.getLicensePlate());
     }
 }

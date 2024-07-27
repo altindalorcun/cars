@@ -1,8 +1,11 @@
 package tr.com.altindalorcun.carservice.service;
 
 import org.springframework.stereotype.Service;
+import tr.com.altindalorcun.carservice.dto.CreateCarDto;
 import tr.com.altindalorcun.carservice.dto.CarDto;
 import tr.com.altindalorcun.carservice.exception.CarNotFoundException;
+import tr.com.altindalorcun.carservice.exception.ExistByLicensePlateException;
+import tr.com.altindalorcun.carservice.model.Car;
 import tr.com.altindalorcun.carservice.repository.CarRepository;
 
 import java.util.List;
@@ -28,10 +31,17 @@ public class CarService {
                 .orElseThrow(() -> new CarNotFoundException("Car could not found by id : " + id));
     }
 
-    public CarDto findCarByVrn(String vrn) {
-        return repository.findCarByVrn(vrn)
+    public CarDto findCarByLicensePlate(String licensePlate) {
+        return repository.findCarByLicensePlate(licensePlate)
                 .map(CarDto::new)
-                .orElseThrow(() -> new CarNotFoundException("Car could not found by vrn : " + vrn));
+                .orElseThrow(() -> new CarNotFoundException("Car could not found by licensePlate : " + licensePlate));
     }
 
+    public UUID createCar(CreateCarDto dto) {
+        if (repository.existsByLicensePlate(dto.licensePlate())) {
+            throw new ExistByLicensePlateException();
+        }
+
+        return repository.save(new Car(dto)).getId();
+    }
 }

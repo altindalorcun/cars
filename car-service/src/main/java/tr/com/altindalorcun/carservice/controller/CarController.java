@@ -1,10 +1,9 @@
 package tr.com.altindalorcun.carservice.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tr.com.altindalorcun.carservice.dto.CreateCarDto;
 import tr.com.altindalorcun.carservice.dto.CarDto;
 import tr.com.altindalorcun.carservice.service.CarService;
 
@@ -31,8 +30,13 @@ public class CarController {
         return ResponseEntity.ok(service.findCarById(id));
     }
 
-    @GetMapping("/vrn/{vrn}")
-    public ResponseEntity<CarDto> findCarByVrn(@PathVariable String vrn) {
-        return ResponseEntity.ok(service.findCarByVrn(vrn));
+    @GetMapping("/license/{licensePlate}")
+    public ResponseEntity<CarDto> findCarByLicensePlate(@PathVariable String licensePlate) {
+        return ResponseEntity.ok(service.findCarByLicensePlate(licensePlate));
+    }
+
+    @PostMapping()
+    public ResponseEntity<UUID> createCar(@RequestBody CreateCarDto dto) {
+        return new ResponseEntity<>(service.createCar(dto), HttpStatus.CREATED);
     }
 }
