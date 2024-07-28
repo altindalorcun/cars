@@ -16,4 +16,12 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ExistByLicensePlateException.class)
+    public ResponseEntity<ExceptionResponse> handle(ExistByLicensePlateException exception) {
+        return new ResponseEntity<>(
+                new ExceptionResponse(exception.getMessage()),
+                HttpStatus.CONFLICT
+        );
+    }
+
 }
