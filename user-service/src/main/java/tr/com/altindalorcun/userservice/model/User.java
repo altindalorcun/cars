@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tr.com.altindalorcun.userservice.dto.UserCreateDto;
-import tr.com.altindalorcun.userservice.dto.UserDto;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,14 +18,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
+    @Column(name = "first_name", nullable = false)
     private String firstName;
+    @Column(name = "last_name", nullable = false)
     private String lastName;
+    @Column(name = "mail", nullable = false)
     private String mail;
-    // TODO : Use PrePersist!
-    @ElementCollection
-    private List<String> userCar = new ArrayList<>();
+    @Column(name = "garage")
+    private UUID garage;
 
     public User(UserCreateDto dto) {
         this.username = dto.username();

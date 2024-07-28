@@ -3,7 +3,6 @@ package tr.com.altindalorcun.userservice.dto;
 import tr.com.altindalorcun.userservice.model.User;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public record UserDto(
@@ -12,9 +11,9 @@ public record UserDto(
         String firstName,
         String lastName,
         String mail,
-        List<CarDto> userCars
+        GarageDto garageDto
 ) {
-    public UserDto(User user) {
-        this(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getMail(), new ArrayList<>());
+    public UserDto(User user, GarageDto garageDto) {
+        this(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getMail(), garageDto);
     }
 }
