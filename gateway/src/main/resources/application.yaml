@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id : user-service
+            uri: lb://user-service
+            predicates:
+              - Path=/api/user/**
+          - id : garage-service
+            uri : lb://garage-service
+            predicates:
+              - Path=/api/garage/**
+          - id : car-service
+            uri : lb://car-service
+            predicates:
+              - Path=/api/car/**
+
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
