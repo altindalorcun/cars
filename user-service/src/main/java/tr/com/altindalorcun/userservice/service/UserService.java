@@ -35,7 +35,7 @@ public class UserService {
     public UserDto findById(UUID id) {
         User user = repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User could not found by id : " + id));
-        GarageDto userGarage = garageServiceClient.findGarageByOwnerId(UUID.randomUUID()).getBody();
+        GarageDto userGarage = garageServiceClient.findGarageByOwnerId(id).getBody();
         return new UserDto(user, userGarage);
     }
 
