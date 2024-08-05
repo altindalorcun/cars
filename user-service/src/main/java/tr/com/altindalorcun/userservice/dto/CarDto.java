@@ -6,6 +6,6 @@ public record CarDto(
         UUID id,
         String brand,
         String model,
-        String vrn
+        String licensePlate
 ) {
 }
