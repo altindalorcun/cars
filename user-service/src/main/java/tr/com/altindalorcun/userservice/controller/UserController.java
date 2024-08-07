@@ -1,6 +1,7 @@
 package tr.com.altindalorcun.userservice.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,9 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService service;
+
+    @Value("${service.count}")
+    private Integer serviceCount;
 
     public UserController(UserService service) {
         this.service = service;
@@ -38,6 +42,11 @@ public class UserController {
     public ResponseEntity<UUID> createUser(@RequestBody UserCreateDto dto) {
         log.info("Create user requested");
         return new ResponseEntity<>(service.createUser(dto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getServiceCount() {
+        return ResponseEntity.ok(serviceCount);
     }
 
 }
