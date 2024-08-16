@@ -1,12 +1,12 @@
 package tr.com.altindalorcun.garage_service.service;
 
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import tr.com.altindalorcun.carservice.CarServiceGrpc;
+import tr.com.altindalorcun.carservice.Id;
 import tr.com.altindalorcun.garage_service.client.CarServiceClient;
-import tr.com.altindalorcun.garage_service.dto.AddCarDto;
-import tr.com.altindalorcun.garage_service.dto.AddGarageDto;
-import tr.com.altindalorcun.garage_service.dto.CreateCarDto;
-import tr.com.altindalorcun.garage_service.dto.GarageDto;
+import tr.com.altindalorcun.garage_service.dto.*;
 import tr.com.altindalorcun.garage_service.exception.GarageAlreadyCreatedException;
 import tr.com.altindalorcun.garage_service.exception.GarageNotFoundByOwnerIdException;
 import tr.com.altindalorcun.garage_service.model.Garage;
@@ -20,6 +20,9 @@ public class GarageService {
 
     private final GarageRepository repository;
     private final CarServiceClient carServiceClient;
+
+    @GrpcClient("car-service")
+    private CarServiceGrpc.CarServiceBlockingStub carServiceBlockingStub;
 
     public GarageService(GarageRepository repository, CarServiceClient carServiceClient) {
         this.repository = repository;
@@ -40,8 +43,8 @@ public class GarageService {
         return new GarageDto(garage.getId(), garage.getOwnerId(),
                 garage.getCarIds()
                         .stream()
-                        .map(carServiceClient::findCarById)
-                        .map(ResponseEntity::getBody)
+                        .map(id -> carServiceBlockingStub.findCarById(Id.newBuilder().setId(id.toString()).build()))
+                        .map(carDto -> new CarDto(UUID.fromString(carDto.getId()), carDto.getBrand(), carDto.getModel(), carDto.getLicensePlate()))
                         .collect(Collectors.toList())
         );
     }
