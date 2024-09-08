@@ -1,1 +1,3 @@
 /.idea/
+/docker/volumes/logs/
+/docker/volumes/file/

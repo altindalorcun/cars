@@ -1,0 +1,97 @@
+version: '3.8'
+services:
+
+  vault:
+    image: vault:1.13.3
+    container_name: vault-cars
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./volumes/logs:/vault/logs
+      - ./volumes/file:/vault/file
+      - ./volumes/config:/vault/config
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_ADDR: http://127.0.0.1:8200
+    entrypoint: vault server -config=/vault/config/vault.json
+    #    entrypoint: vault server -dev -dev-root-token-id=root
+    networks:
+      - cars-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8200/v1/sys/health | grep '\"sealed\":false'"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 60s
+
+  eureka-server:
+    container_name: eureka-server
+    image: eureka-server:0.0.1
+    ports:
+      - "8761:8761"
+    networks:
+      - cars-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  config-server:
+    container_name: config-server
+    image: config-server:0.0.1
+    networks:
+      - cars-network
+    environment:
+      VAULT_TOKEN: ${VAULT_TOKEN}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+    depends_on:
+      vault:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  gateway:
+    container_name: gateway
+    image: gateway:0.0.1
+    ports:
+      - "8080:8080"
+    networks:
+      - cars-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+  user-service:
+    container_name: user-service-dev
+    image: user-service-dev:0.0.1
+    networks:
+      - cars-network
+    depends_on:
+      config-server:
+        condition: service_healthy
+
+  garage-service:
+    container_name: garage-service-dev
+    image: garage-service-dev:0.0.1
+    networks:
+      - cars-network
+    depends_on:
+      config-server:
+        condition: service_healthy
+
+  car-service:
+    container_name: car-service-dev
+    image: car-service-dev:0.0.1
+    networks:
+      - cars-network
+    depends_on:
+      config-server:
+        condition: service_healthy
+
+networks:
+  cars-network:
+    driver: bridge
