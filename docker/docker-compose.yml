@@ -19,11 +19,19 @@ services:
     networks:
       - cars-network
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8200/v1/sys/health | grep '\"sealed\":false'"]
+      test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:8200/v1/sys/health | grep '\"sealed\":false'" ]
       interval: 10s
       timeout: 3s
       retries: 10
       start_period: 60s
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - cars-network
 
   eureka-server:
     container_name: eureka-server
