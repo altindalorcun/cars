@@ -23,7 +23,7 @@ Visit http://localhost:8200 to ensure Vault is unsealed. Once Vault is unsealed,
 
 ### Important Step: Clearing Vault Volume
 
-If Vault has been previously initialized or you are setting it up for the first time, it is essential to clear the volume files to ensure that Vault is initialized from scratch, and you can create your own token.
+If Vault has been previously initialized, or you are setting it up for the first time, it is essential to clear the volume files to ensure that Vault is initialized from scratch, and you can create your own token.
 
 ### Start the Vault
 ```bash
